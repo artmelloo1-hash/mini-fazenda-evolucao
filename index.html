@@ -1,137 +1,71 @@
-
-<!DOCTYPE html>
+<!doctype html>
 <html lang="pt-BR">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Mini Fazenda Evolução</title>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Vale Verde — Minha Fazenda</title>
 <style>
-*{box-sizing:border-box}
-body{margin:0;font-family:Arial,sans-serif;background:#eaf5df;color:#29452b}
-header{background:linear-gradient(120deg,#285d35,#4c9a4b);color:white;padding:24px 5%;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px}
-header h1{margin:0;font-size:25px}
-.stats{display:flex;gap:10px;flex-wrap:wrap}
-.stat{background:#ffffff20;padding:10px 15px;border-radius:12px;font-weight:bold}
-main{max-width:1100px;margin:25px auto;padding:0 15px}
-.welcome{background:white;border-radius:18px;padding:20px;margin-bottom:20px;box-shadow:0 5px 18px #315b2512}
-.welcome h2{margin:0 0 8px}
-.toolbar{display:flex;gap:10px;flex-wrap:wrap;margin:18px 0}
-button{border:0;border-radius:12px;padding:12px 17px;font-weight:bold;cursor:pointer;background:#438c45;color:white;font-size:14px}
-button:hover{filter:brightness(1.08)}
-button:disabled{opacity:.5;cursor:not-allowed}
-#farm{background:#b7df9b;border:8px solid #8b603c;border-radius:18px;padding:14px;display:grid;grid-template-columns:repeat(5,1fr);gap:10px;box-shadow:inset 0 0 0 3px #ffffff55}
-.plot{min-height:105px;border:3px solid #8c633f;border-radius:13px;background:#9b7048;display:flex;flex-direction:column;justify-content:center;align-items:center;gap:6px;color:white;text-align:center;padding:5px}
-.plot.empty{background:#9b7048}
-.plot.ready{background:#e9bd45;color:#543d13}
-.plot.growing{background:#78a95a}
-.plot .emoji{font-size:30px}
-.plot small{font-size:11px}
-.panel{background:white;border-radius:18px;padding:20px;margin-top:20px;box-shadow:0 5px 18px #315b2512}
-#message{color:#39733a;font-weight:bold;min-height:22px}
-footer{text-align:center;padding:25px;color:#648064}
-@media(max-width:600px){#farm{grid-template-columns:repeat(3,1fr);gap:7px;padding:8px}.plot{min-height:90px}header h1{font-size:21px}}
-</style>
-</head>
+:root{--green:#285b38;--leaf:#4e9652;--cream:#fff9e9;--gold:#f3c85b;--ink:#294331}
+*{box-sizing:border-box}body{margin:0;background:#eaf1dc;color:var(--ink);font-family:system-ui,Segoe UI,sans-serif}
+header{background:linear-gradient(110deg,#214d32,#4b8b4a);color:#fff;padding:14px clamp(14px,4vw,44px);display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;box-shadow:0 4px 18px #173a2630}
+.brand{font-weight:900;font-size:clamp(20px,3vw,28px);letter-spacing:.3px}.brand small{display:block;font-size:11px;letter-spacing:2px;color:#d6ebc8}
+.stats{display:flex;gap:8px;flex-wrap:wrap}.pill{background:#ffffff20;border:1px solid #ffffff25;padding:8px 13px;border-radius:14px;font-weight:800}
+main{max-width:1200px;margin:22px auto;padding:0 16px;display:grid;grid-template-columns:minmax(0,1fr) 280px;gap:18px}
+.card{background:var(--cream);border:1px solid #d7dfc4;border-radius:20px;box-shadow:0 8px 25px #36542b12;padding:17px}
+.intro{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:14px}.intro h2{margin:0;font-size:22px}.muted{color:#6b8067;font-size:13px}
+.toolbar{display:flex;gap:8px;flex-wrap:wrap;margin:12px 0}
+button{border:0;border-radius:12px;padding:10px 13px;background:#e5ecd9;color:#31583a;font-weight:800;cursor:pointer;transition:.15s}
+button:hover{transform:translateY(-1px);filter:brightness(.97)}button.active,.primary{background:var(--leaf);color:white}button:disabled{opacity:.4;cursor:not-allowed;transform:none}
+.field{position:relative;overflow:hidden;border-radius:18px;padding:20px;background:radial-gradient(ellipse at 50% 48%,#b8d88c 0,#9dc77b 55%,#78a866 100%);border:8px solid #8c633d;box-shadow:inset 0 0 0 2px #fff7}
+.field:before{content:"";position:absolute;inset:0;opacity:.14;background-image:radial-gradient(#fff 1px,transparent 1px);background-size:18px 18px;pointer-events:none}
+#plots{position:relative;display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:10px}
+.plot{min-height:105px;border:2px solid #805536;border-radius:13px;background:linear-gradient(145deg,#b47d4b,#805333);color:#fff;display:flex;flex-direction:column;justify-content:center;align-items:center;gap:3px;cursor:pointer;box-shadow:inset 0 3px 5px #ffffff25,0 3px 0 #68452d;padding:5px;text-align:center}
+.plot .crop{font-size:31px;line-height:1.2}.plot small{font-size:10px;font-weight:800}.plot.growing{background:linear-gradient(145deg,#80b65d,#548344)}.plot.ready{background:linear-gradient(145deg,#f4d36a,#d69e3b);color:#62451b;border-color:#a8792f}.plot.empty:after{content:"＋";font-size:18px;color:#f8dfb5}
+.side{display:flex;flex-direction:column;gap:14px}.side h3{margin:0 0 10px}.shopitem{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:10px 0;border-bottom:1px solid #e5e8d9}.shopitem:last-child{border:0}.shopitem b{display:block}.shopitem small{color:#73816b}
+.progress{height:9px;background:#e2e8d7;border-radius:20px;overflow:hidden;margin:8px 0}.progress span{display:block;height:100%;background:#e7b943;width:0}
+#message{min-height:22px;color:#427746;font-weight:750;font-size:13px;margin-top:10px}
+.actions{display:flex;gap:8px;flex-wrap:wrap}.animal{font-size:28px}
+@media(max-width:850px){main{grid-template-columns:1fr}.side{display:grid;grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:560px){#plots{grid-template-columns:repeat(3,minmax(0,1fr));gap:7px}.plot{min-height:88px}.field{padding:10px;border-width:5px}.side{grid-template-columns:1fr}.pill{font-size:12px;padding:7px 9px}}
+</style></head>
 <body>
-<header>
-  <h1>🌻 Mini Fazenda Evolução</h1>
-  <div class="stats">
-    <div class="stat">🪙 <span id="coins">100</span></div>
-    <div class="stat">⭐ Nível <span id="level">1</span></div>
-    <div class="stat">✨ XP <span id="xp">0</span></div>
-  </div>
-</header>
-
+<header><div class="brand">🌿 VALE VERDE <small>MINHA FAZENDA</small></div><div class="stats"><div class="pill">🪙 <span id="coins">180</span></div><div class="pill">⭐ Nível <span id="level">1</span></div><div class="pill">✨ <span id="xp">0</span> XP</div></div></header>
 <main>
-  <section class="welcome">
-    <h2>Bem-vindo à sua fazenda!</h2>
-    <p>Prepare a terra, plante suas sementes e colha para ganhar moedas e experiência.</p>
-    <div id="message">Sua aventura começa agora! 🌱</div>
-  </section>
-
-  <div class="toolbar">
-    <button onclick="selectAction('plant')">🌱 Plantar trigo (10 moedas)</button>
-    <button onclick="selectAction('harvest')">🌾 Colher plantação</button>
-  </div>
-
-  <section id="farm"></section>
-
-  <section class="panel">
-    <h3>📖 Como jogar</h3>
-    <p>1. Escolha <b>Plantar trigo</b> e clique em um terreno vazio.</p>
-    <p>2. Aguarde o crescimento da plantação.</p>
-    <p>3. Escolha <b>Colher plantação</b> e clique no trigo pronto.</p>
-    <p>4. Ganhe moedas e XP para evoluir sua fazenda!</p>
-    <p>🌾 Cada colheita rende 25 moedas e 10 XP.</p>
-  </section>
-</main>
-
-<footer>Mini Fazenda Evolução • Sua fazenda, suas conquistas! 🌻</footer>
-
+<section class="card">
+ <div class="intro"><div><h2>🌻 Sua propriedade</h2><div class="muted">Cuide da terra, plante e faça sua fazenda prosperar.</div></div><div class="muted">Dia <b id="day">1</b></div></div>
+ <div class="toolbar" id="tools"><button class="active" data-tool="plant">🌱 Plantar</button><button data-tool="harvest">🧺 Colher</button><button data-tool="clear">🪓 Limpar</button></div>
+ <div class="field"><div id="plots"></div></div>
+ <div id="message">Escolha uma semente na loja e toque em um terreno vazio.</div>
+ <div class="toolbar actions"><button id="save">💾 Salvar agora</button><button id="reset">↻ Nova fazenda</button></div>
+</section>
+<aside class="side">
+ <section class="card"><h3>🛒 Loja de sementes</h3><div id="seeds"></div></section>
+ <section class="card"><h3>📦 Seu celeiro</h3><div id="inventory"></div><div class="muted" style="margin-top:8px">Venda suas colheitas para ganhar moedas.</div></section>
+ <section class="card"><h3>🐄 Cantinho dos animais</h3><div class="shopitem"><span><span class="animal">🐔</span> Galinha <small id="chickens">0</small></span><button id="buyChicken">Comprar · 90 🪙</button></div><div class="shopitem"><span><span class="animal">🐄</span> Vaca <small id="cows">0</small></span><button id="buyCow">Comprar · 180 🪙</button></div><div class="muted">Animais são decorativos nesta primeira versão.</div></section>
+ <section class="card"><h3>🏅 Evolução</h3><div>Próximo nível: <b id="next">100</b> XP</div><div class="progress"><span id="xpbar"></span></div><div class="muted">A cada nível você recebe 50 moedas.</div></section>
+</aside></main>
 <script>
-const TOTAL=25;
-const GROW_TIME=15000;
-let coins=100,xp=0,action='plant',plots=[];
-
-function load(){
-  try{
-    const saved=JSON.parse(localStorage.getItem('miniFazendaEvolucao'));
-    if(saved){coins=saved.coins??100;xp=saved.xp??0;plots=saved.plots??[];}
-  }catch(e){}
-  while(plots.length<TOTAL)plots.push(null);
-  render();
-}
-function save(){
-  localStorage.setItem('miniFazendaEvolucao',JSON.stringify({coins,xp,plots}));
-}
-function level(){return Math.floor(xp/50)+1}
-function selectAction(a){
-  action=a;
-  say(a==='plant'?'Escolha um terreno vazio para plantar. 🌱':'Clique em uma plantação pronta para colher. 🌾');
-}
-function say(t){document.getElementById('message').textContent=t}
-function plant(i){
-  if(coins<10){say('Você não tem moedas suficientes!');return}
-  if(plots[i]){say('Esse terreno já está ocupado.');return}
-  coins-=10;
-  plots[i]={plantedAt:Date.now()};
-  say('Trigo plantado! Aguarde o crescimento. 🌱');
-  save();render();
-}
-function harvest(i){
-  const p=plots[i];
-  if(!p)return;
-  if(Date.now()-p.plantedAt<GROW_TIME){say('O trigo ainda está crescendo!');return}
-  plots[i]=null;coins+=25;xp+=10;
-  say('Colheita realizada! Você ganhou 25 moedas e 10 XP! 🎉');
-  save();render();
-}
-function render(){
-  document.getElementById('coins').textContent=coins;
-  document.getElementById('xp').textContent=xp;
-  document.getElementById('level').textContent=level();
-  const farm=document.getElementById('farm');
-  farm.innerHTML='';
-  plots.forEach((p,i)=>{
-    const el=document.createElement('button');
-    el.className='plot '+(!p?'empty':'growing');
-    if(!p){
-      el.innerHTML='<span class="emoji">🟫</span><small>Terreno vazio</small>';
-    }else{
-      const elapsed=Date.now()-p.plantedAt;
-      const ready=elapsed>=GROW_TIME;
-      const remaining=Math.max(0,Math.ceil((GROW_TIME-elapsed)/1000));
-      el.className='plot '+(ready?'ready':'growing');
-      el.innerHTML=ready
-        ?'<span class="emoji">🌾</span><small>Pronto para colher!</small>'
-        :'<span class="emoji">🌱</span><small>Crescendo: '+remaining+'s</small>';
-    }
-    el.onclick=()=>action==='plant'?plant(i):harvest(i);
-    farm.appendChild(el);
-  });
-}
-load();
-setInterval(render,1000);
-</script>
-</body>
-</html>
+const KEY='vale-verde-save-v1';
+const crops={carrot:{name:'Cenoura',emoji:'🥕',cost:12,value:28,time:12000,xp:8},wheat:{name:'Trigo',emoji:'🌾',cost:18,value:42,time:18000,xp:10},strawberry:{name:'Morango',emoji:'🍓',cost:30,value:72,time:26000,xp:15},corn:{name:'Milho',emoji:'🌽',cost:42,value:100,time:35000,xp:20}};
+const fresh=()=>({coins:180,xp:0,level:1,day:1,selected:'carrot',tool:'plant',plots:Array.from({length:20},()=>null),inventory:{carrot:0,wheat:0,strawberry:0,corn:0},chickens:0,cows:0,lastDay:Date.now()});
+let s=load();
+function load(){try{const x=JSON.parse(localStorage.getItem(KEY));if(x&&Array.isArray(x.plots))return {...fresh(),...x}}catch(e){}return fresh()}
+function save(){localStorage.setItem(KEY,JSON.stringify(s));msg('Progresso salvo neste computador!')}
+function msg(t){document.getElementById('message').textContent=t}
+function gainXP(n){s.xp+=n;while(s.xp>=s.level*100){s.xp-=s.level*100;s.level++;s.coins+=50;msg('🎉 Você chegou ao nível '+s.level+'! +50 moedas.')} }
+function render(){document.getElementById('coins').textContent=s.coins;document.getElementById('level').textContent=s.level;document.getElementById('xp').textContent=s.xp;document.getElementById('day').textContent=s.day;document.getElementById('chickens').textContent='×'+s.chickens;document.getElementById('cows').textContent='×'+s.cows;document.getElementById('next').textContent=s.level*100;document.getElementById('xpbar').style.width=(s.xp/(s.level*100)*100)+'%';
+ document.querySelectorAll('[data-tool]').forEach(b=>b.classList.toggle('active',b.dataset.tool===s.tool));
+ const p=document.getElementById('plots');p.innerHTML='';s.plots.forEach((v,i)=>{let b=document.createElement('button');b.className='plot '+(!v?'empty':Date.now()>=v.ready?'ready':'growing');if(v){let c=crops[v.type],ready=Date.now()>=v.ready;b.innerHTML='<span class="crop">'+(ready?c.emoji:(v.type==='carrot'?'🌱':'🌿'))+'</span><b>'+c.name+'</b><small>'+(ready?'PRONTO PARA COLHER':Math.max(1,Math.ceil((v.ready-Date.now())/1000))+'s')+'</small>'}else b.innerHTML='<small>TERRENO '+(i+1)+'</small>';b.onclick=()=>plotClick(i);p.appendChild(b)});
+ const seeds=document.getElementById('seeds');seeds.innerHTML='';Object.entries(crops).forEach(([k,c])=>{let d=document.createElement('div');d.className='shopitem';d.innerHTML='<span><b>'+c.emoji+' '+c.name+'</b><small>Venda: '+c.value+' moedas</small></span><button '+(s.coins<c.cost?'disabled':'')+'>'+c.cost+' 🪙</button>';d.querySelector('button').onclick=()=>{s.selected=k;s.tool='plant';render();msg(c.name+' selecionada. Toque em um terreno vazio.')};if(s.selected===k)d.style.background='#edf4e5';seeds.appendChild(d)});
+ const inv=document.getElementById('inventory');inv.innerHTML='';Object.entries(crops).forEach(([k,c])=>{let n=s.inventory[k]||0,d=document.createElement('div');d.className='shopitem';d.innerHTML='<span>'+c.emoji+' '+c.name+' <b>×'+n+'</b></span><button '+(n<1?'disabled':'')+'>Vender '+(n?('('+n+')'):'')+'</button>';d.querySelector('button').onclick=()=>{let total=n*c.value;s.coins+=total;s.inventory[k]=0;render();save();msg('Venda realizada: +'+total+' moedas!')};inv.appendChild(d)})}
+function plotClick(i){let v=s.plots[i];if(s.tool==='clear'){if(!v){msg('Este terreno já está limpo.');return}s.plots[i]=null;msg('Terreno liberado.');}
+ else if(s.tool==='harvest'){if(!v){msg('Não há nada plantado aqui.');return}if(Date.now()<v.ready){msg('A plantação ainda está crescendo.');return}s.inventory[v.type]=(s.inventory[v.type]||0)+1;gainXP(crops[v.type].xp);s.plots[i]=null;msg('Colheita guardada no celeiro!');}
+ else {if(v){msg('Este terreno já está ocupado.');return}let c=crops[s.selected];if(s.coins<c.cost){msg('Moedas insuficientes. Venda colheitas para ganhar mais.');return}s.coins-=c.cost;s.plots[i]={type:s.selected,ready:Date.now()+c.time};msg(c.name+' plantada! Volte quando estiver pronta.');}
+ render();save()}
+document.querySelectorAll('[data-tool]').forEach(b=>b.onclick=()=>{s.tool=b.dataset.tool;render();msg(s.tool==='plant'?'Modo plantar: escolha um terreno vazio.':s.tool==='harvest'?'Modo colher: toque em uma plantação pronta.':'Modo limpar: toque em um terreno ocupado.')});
+document.getElementById('buyChicken').onclick=()=>buyAnimal('chickens',90,'Galinha');document.getElementById('buyCow').onclick=()=>buyAnimal('cows',180,'Vaca');
+function buyAnimal(k,cost,name){if(s.coins<cost){msg('Moedas insuficientes.');return}s.coins-=cost;s[k]++;render();save();msg(name+' chegou à fazenda!')}
+document.getElementById('save').onclick=save;
+document.getElementById('reset').onclick=()=>{if(confirm('Começar uma fazenda nova? O progresso salvo será apagado.')){s=fresh();save();render();msg('Sua nova fazenda está pronta!')}};
+function tick(){let changed=false;s.plots.forEach(v=>{if(v&&Date.now()>=v.ready)changed=true});if(changed)render()}
+render();setInterval(tick,1000);setInterval(()=>localStorage.setItem(KEY,JSON.stringify(s)),5000);
+</script></body></html>
