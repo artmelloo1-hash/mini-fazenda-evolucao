@@ -2,70 +2,88 @@
 <html lang="pt-BR">
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Vale Verde — Minha Fazenda</title>
+<title>Vale Verde — Fazenda</title>
 <style>
-:root{--green:#285b38;--leaf:#4e9652;--cream:#fff9e9;--gold:#f3c85b;--ink:#294331}
-*{box-sizing:border-box}body{margin:0;background:#eaf1dc;color:var(--ink);font-family:system-ui,Segoe UI,sans-serif}
-header{background:linear-gradient(110deg,#214d32,#4b8b4a);color:#fff;padding:14px clamp(14px,4vw,44px);display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;box-shadow:0 4px 18px #173a2630}
-.brand{font-weight:900;font-size:clamp(20px,3vw,28px);letter-spacing:.3px}.brand small{display:block;font-size:11px;letter-spacing:2px;color:#d6ebc8}
-.stats{display:flex;gap:8px;flex-wrap:wrap}.pill{background:#ffffff20;border:1px solid #ffffff25;padding:8px 13px;border-radius:14px;font-weight:800}
-main{max-width:1200px;margin:22px auto;padding:0 16px;display:grid;grid-template-columns:minmax(0,1fr) 280px;gap:18px}
-.card{background:var(--cream);border:1px solid #d7dfc4;border-radius:20px;box-shadow:0 8px 25px #36542b12;padding:17px}
-.intro{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:14px}.intro h2{margin:0;font-size:22px}.muted{color:#6b8067;font-size:13px}
-.toolbar{display:flex;gap:8px;flex-wrap:wrap;margin:12px 0}
-button{border:0;border-radius:12px;padding:10px 13px;background:#e5ecd9;color:#31583a;font-weight:800;cursor:pointer;transition:.15s}
-button:hover{transform:translateY(-1px);filter:brightness(.97)}button.active,.primary{background:var(--leaf);color:white}button:disabled{opacity:.4;cursor:not-allowed;transform:none}
-.field{position:relative;overflow:hidden;border-radius:18px;padding:20px;background:radial-gradient(ellipse at 50% 48%,#b8d88c 0,#9dc77b 55%,#78a866 100%);border:8px solid #8c633d;box-shadow:inset 0 0 0 2px #fff7}
-.field:before{content:"";position:absolute;inset:0;opacity:.14;background-image:radial-gradient(#fff 1px,transparent 1px);background-size:18px 18px;pointer-events:none}
-#plots{position:relative;display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:10px}
-.plot{min-height:105px;border:2px solid #805536;border-radius:13px;background:linear-gradient(145deg,#b47d4b,#805333);color:#fff;display:flex;flex-direction:column;justify-content:center;align-items:center;gap:3px;cursor:pointer;box-shadow:inset 0 3px 5px #ffffff25,0 3px 0 #68452d;padding:5px;text-align:center}
-.plot .crop{font-size:31px;line-height:1.2}.plot small{font-size:10px;font-weight:800}.plot.growing{background:linear-gradient(145deg,#80b65d,#548344)}.plot.ready{background:linear-gradient(145deg,#f4d36a,#d69e3b);color:#62451b;border-color:#a8792f}.plot.empty:after{content:"＋";font-size:18px;color:#f8dfb5}
-.side{display:flex;flex-direction:column;gap:14px}.side h3{margin:0 0 10px}.shopitem{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:10px 0;border-bottom:1px solid #e5e8d9}.shopitem:last-child{border:0}.shopitem b{display:block}.shopitem small{color:#73816b}
-.progress{height:9px;background:#e2e8d7;border-radius:20px;overflow:hidden;margin:8px 0}.progress span{display:block;height:100%;background:#e7b943;width:0}
-#message{min-height:22px;color:#427746;font-weight:750;font-size:13px;margin-top:10px}
-.actions{display:flex;gap:8px;flex-wrap:wrap}.animal{font-size:28px}
-@media(max-width:850px){main{grid-template-columns:1fr}.side{display:grid;grid-template-columns:repeat(2,minmax(0,1fr))}}
-@media(max-width:560px){#plots{grid-template-columns:repeat(3,minmax(0,1fr));gap:7px}.plot{min-height:88px}.field{padding:10px;border-width:5px}.side{grid-template-columns:1fr}.pill{font-size:12px;padding:7px 9px}}
+:root{--gold:#ffc84b;--brown:#78431e;--green:#4d9b32;--dark:#183c20}
+*{box-sizing:border-box}html,body{margin:0;width:100%;height:100%;overflow:hidden;font-family:Trebuchet MS,system-ui,sans-serif;background:#78a936;color:#fff}
+#game{position:fixed;inset:0;width:100%;height:100%;display:block}
+.hud{position:fixed;z-index:3;display:flex;align-items:center;gap:10px;text-shadow:2px 3px 1px #42250f;pointer-events:none}
+.top{top:12px;left:14px;right:14px;justify-content:space-between}.level{background:linear-gradient(#70401c,#3d230f);border:3px solid #d99b38;border-radius:22px;padding:7px 14px;font-weight:1000;box-shadow:0 3px 0 #42250f}.coins{background:#263c12d9;border:2px solid #9ebd35;border-radius:20px;padding:8px 15px;font-size:20px;font-weight:1000}
+.brand{position:fixed;z-index:3;top:72px;left:18px;font-size:22px;font-weight:1000;color:#ffdf37;-webkit-text-stroke:1px #54320c;text-shadow:2px 3px #42250f}
+.controls{position:fixed;z-index:4;right:14px;bottom:14px;display:grid;grid-template-columns:repeat(3,64px);gap:7px}
+button{font:inherit;cursor:pointer;color:#fff;text-shadow:1px 2px #56320f;font-weight:1000;border:3px solid #a4d65b;border-radius:13px;background:linear-gradient(#7bc73e,#398526);box-shadow:0 4px 0 #285c1d;padding:8px 5px}
+button:active{transform:translateY(3px);box-shadow:0 1px 0 #285c1d}
+.controls button{min-height:55px;font-size:25px}.controls .big{grid-row:span 2;font-size:17px;background:linear-gradient(#ffe36c,#d68a18);color:#fff}
+.panel{position:fixed;z-index:5;display:none;background:linear-gradient(#fff4c5,#ffdb75);color:#65360f;border:5px solid #a65b1d;border-radius:18px;box-shadow:0 7px 0 #65330d,0 12px 28px #18290b66;padding:16px;max-width:min(420px,calc(100vw - 24px));max-height:75vh;overflow:auto}
+.panel.open{display:block}.panel h2{margin:0 0 12px;font-size:21px}.panel p{margin:7px 0}.panel button{margin:4px;background:linear-gradient(#70bd3c,#39852a);border-color:#a9d75e}.close{float:right;background:linear-gradient(#bd6532,#854018)!important}
+#shop{right:14px;bottom:14px;width:330px}#barn{right:14px;bottom:14px;width:330px}#animals{right:14px;bottom:14px;width:330px}
+.item{display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid #d7a84b;padding:9px 0;gap:10px}.item small{display:block;opacity:.75}
+#toast{position:fixed;z-index:6;left:50%;top:18%;transform:translateX(-50%);background:#3b2b13e8;padding:10px 18px;border-radius:22px;font-weight:900;opacity:0;transition:opacity .2s;pointer-events:none;text-align:center}
+#task{position:fixed;z-index:3;left:14px;bottom:18px;background:#ffe58c;color:#68380d;border:4px solid #bd741e;border-radius:15px;padding:12px 16px;width:min(360px,calc(100vw - 28px));box-shadow:0 5px #6c3a13;font-weight:800}
+#task small{display:block;font-weight:600;margin-top:4px}
+@media(max-width:650px){.brand{top:65px;font-size:17px}.controls{grid-template-columns:repeat(3,54px);gap:5px;right:8px;bottom:8px}.controls button{min-height:49px}.controls .big{font-size:14px}.coins{font-size:15px}.level{font-size:13px;padding:6px 9px}#task{bottom:175px;font-size:13px;width:245px}}
 </style></head>
 <body>
-<header><div class="brand">🌿 VALE VERDE <small>MINHA FAZENDA</small></div><div class="stats"><div class="pill">🪙 <span id="coins">180</span></div><div class="pill">⭐ Nível <span id="level">1</span></div><div class="pill">✨ <span id="xp">0</span> XP</div></div></header>
-<main>
-<section class="card">
- <div class="intro"><div><h2>🌻 Sua propriedade</h2><div class="muted">Cuide da terra, plante e faça sua fazenda prosperar.</div></div><div class="muted">Dia <b id="day">1</b></div></div>
- <div class="toolbar" id="tools"><button class="active" data-tool="plant">🌱 Plantar</button><button data-tool="harvest">🧺 Colher</button><button data-tool="clear">🪓 Limpar</button></div>
- <div class="field"><div id="plots"></div></div>
- <div id="message">Escolha uma semente na loja e toque em um terreno vazio.</div>
- <div class="toolbar actions"><button id="save">💾 Salvar agora</button><button id="reset">↻ Nova fazenda</button></div>
-</section>
-<aside class="side">
- <section class="card"><h3>🛒 Loja de sementes</h3><div id="seeds"></div></section>
- <section class="card"><h3>📦 Seu celeiro</h3><div id="inventory"></div><div class="muted" style="margin-top:8px">Venda suas colheitas para ganhar moedas.</div></section>
- <section class="card"><h3>🐄 Cantinho dos animais</h3><div class="shopitem"><span><span class="animal">🐔</span> Galinha <small id="chickens">0</small></span><button id="buyChicken">Comprar · 90 🪙</button></div><div class="shopitem"><span><span class="animal">🐄</span> Vaca <small id="cows">0</small></span><button id="buyCow">Comprar · 180 🪙</button></div><div class="muted">Animais são decorativos nesta primeira versão.</div></section>
- <section class="card"><h3>🏅 Evolução</h3><div>Próximo nível: <b id="next">100</b> XP</div><div class="progress"><span id="xpbar"></span></div><div class="muted">A cada nível você recebe 50 moedas.</div></section>
-</aside></main>
+<canvas id="game"></canvas>
+<div class="hud top"><div class="level">⭐ NÍVEL <span id="lvl">1</span> · <span id="xp">0</span>/100 XP</div><div class="coins">🪙 <span id="money">700</span></div></div>
+<div class="brand">🌻 Fazenda Vale Verde</div>
+<div id="task">👩‍🌾 Bem-vindo à sua fazenda!<small id="tasktext">Clique em um terreno para preparar a terra e plantar.</small></div>
+<div class="controls">
+<button class="big" onclick="openPanel('shop')">🛒<br>LOJA</button>
+<button title="Mover" onclick="setTool('move')">👆</button><button title="Arar" onclick="setTool('plow')">⛏️</button><button title="Plantar" onclick="setTool('plant')">🌱</button>
+<button title="Colher" onclick="setTool('harvest')">🧺</button><button title="Celeiro" onclick="openPanel('barn')">📦</button>
+<button title="Animais" onclick="openPanel('animals')">🐔</button><button title="Salvar" onclick="save();toast('Jogo salvo!')">💾</button>
+</div>
+<div id="shop" class="panel"><button class="close" onclick="closePanels()">✕</button><h2>🛒 Loja da fazenda</h2><div id="shopitems"></div><p><small>Escolha uma semente e clique em um canteiro preparado.</small></p></div>
+<div id="barn" class="panel"><button class="close" onclick="closePanels()">✕</button><h2>📦 Celeiro e vendas</h2><div id="inventory"></div><p id="barnnote">Venda sua produção para ganhar moedas.</p></div>
+<div id="animals" class="panel"><button class="close" onclick="closePanels()">✕</button><h2>🐓 Mercado de animais</h2><div id="animalitems"></div></div>
+<div id="toast"></div>
 <script>
-const KEY='vale-verde-save-v1';
-const crops={carrot:{name:'Cenoura',emoji:'🥕',cost:12,value:28,time:12000,xp:8},wheat:{name:'Trigo',emoji:'🌾',cost:18,value:42,time:18000,xp:10},strawberry:{name:'Morango',emoji:'🍓',cost:30,value:72,time:26000,xp:15},corn:{name:'Milho',emoji:'🌽',cost:42,value:100,time:35000,xp:20}};
-const fresh=()=>({coins:180,xp:0,level:1,day:1,selected:'carrot',tool:'plant',plots:Array.from({length:20},()=>null),inventory:{carrot:0,wheat:0,strawberry:0,corn:0},chickens:0,cows:0,lastDay:Date.now()});
-let s=load();
-function load(){try{const x=JSON.parse(localStorage.getItem(KEY));if(x&&Array.isArray(x.plots))return {...fresh(),...x}}catch(e){}return fresh()}
-function save(){localStorage.setItem(KEY,JSON.stringify(s));msg('Progresso salvo neste computador!')}
-function msg(t){document.getElementById('message').textContent=t}
-function gainXP(n){s.xp+=n;while(s.xp>=s.level*100){s.xp-=s.level*100;s.level++;s.coins+=50;msg('🎉 Você chegou ao nível '+s.level+'! +50 moedas.')} }
-function render(){document.getElementById('coins').textContent=s.coins;document.getElementById('level').textContent=s.level;document.getElementById('xp').textContent=s.xp;document.getElementById('day').textContent=s.day;document.getElementById('chickens').textContent='×'+s.chickens;document.getElementById('cows').textContent='×'+s.cows;document.getElementById('next').textContent=s.level*100;document.getElementById('xpbar').style.width=(s.xp/(s.level*100)*100)+'%';
- document.querySelectorAll('[data-tool]').forEach(b=>b.classList.toggle('active',b.dataset.tool===s.tool));
- const p=document.getElementById('plots');p.innerHTML='';s.plots.forEach((v,i)=>{let b=document.createElement('button');b.className='plot '+(!v?'empty':Date.now()>=v.ready?'ready':'growing');if(v){let c=crops[v.type],ready=Date.now()>=v.ready;b.innerHTML='<span class="crop">'+(ready?c.emoji:(v.type==='carrot'?'🌱':'🌿'))+'</span><b>'+c.name+'</b><small>'+(ready?'PRONTO PARA COLHER':Math.max(1,Math.ceil((v.ready-Date.now())/1000))+'s')+'</small>'}else b.innerHTML='<small>TERRENO '+(i+1)+'</small>';b.onclick=()=>plotClick(i);p.appendChild(b)});
- const seeds=document.getElementById('seeds');seeds.innerHTML='';Object.entries(crops).forEach(([k,c])=>{let d=document.createElement('div');d.className='shopitem';d.innerHTML='<span><b>'+c.emoji+' '+c.name+'</b><small>Venda: '+c.value+' moedas</small></span><button '+(s.coins<c.cost?'disabled':'')+'>'+c.cost+' 🪙</button>';d.querySelector('button').onclick=()=>{s.selected=k;s.tool='plant';render();msg(c.name+' selecionada. Toque em um terreno vazio.')};if(s.selected===k)d.style.background='#edf4e5';seeds.appendChild(d)});
- const inv=document.getElementById('inventory');inv.innerHTML='';Object.entries(crops).forEach(([k,c])=>{let n=s.inventory[k]||0,d=document.createElement('div');d.className='shopitem';d.innerHTML='<span>'+c.emoji+' '+c.name+' <b>×'+n+'</b></span><button '+(n<1?'disabled':'')+'>Vender '+(n?('('+n+')'):'')+'</button>';d.querySelector('button').onclick=()=>{let total=n*c.value;s.coins+=total;s.inventory[k]=0;render();save();msg('Venda realizada: +'+total+' moedas!')};inv.appendChild(d)})}
-function plotClick(i){let v=s.plots[i];if(s.tool==='clear'){if(!v){msg('Este terreno já está limpo.');return}s.plots[i]=null;msg('Terreno liberado.');}
- else if(s.tool==='harvest'){if(!v){msg('Não há nada plantado aqui.');return}if(Date.now()<v.ready){msg('A plantação ainda está crescendo.');return}s.inventory[v.type]=(s.inventory[v.type]||0)+1;gainXP(crops[v.type].xp);s.plots[i]=null;msg('Colheita guardada no celeiro!');}
- else {if(v){msg('Este terreno já está ocupado.');return}let c=crops[s.selected];if(s.coins<c.cost){msg('Moedas insuficientes. Venda colheitas para ganhar mais.');return}s.coins-=c.cost;s.plots[i]={type:s.selected,ready:Date.now()+c.time};msg(c.name+' plantada! Volte quando estiver pronta.');}
- render();save()}
-document.querySelectorAll('[data-tool]').forEach(b=>b.onclick=()=>{s.tool=b.dataset.tool;render();msg(s.tool==='plant'?'Modo plantar: escolha um terreno vazio.':s.tool==='harvest'?'Modo colher: toque em uma plantação pronta.':'Modo limpar: toque em um terreno ocupado.')});
-document.getElementById('buyChicken').onclick=()=>buyAnimal('chickens',90,'Galinha');document.getElementById('buyCow').onclick=()=>buyAnimal('cows',180,'Vaca');
-function buyAnimal(k,cost,name){if(s.coins<cost){msg('Moedas insuficientes.');return}s.coins-=cost;s[k]++;render();save();msg(name+' chegou à fazenda!')}
-document.getElementById('save').onclick=save;
-document.getElementById('reset').onclick=()=>{if(confirm('Começar uma fazenda nova? O progresso salvo será apagado.')){s=fresh();save();render();msg('Sua nova fazenda está pronta!')}};
-function tick(){let changed=false;s.plots.forEach(v=>{if(v&&Date.now()>=v.ready)changed=true});if(changed)render()}
-render();setInterval(tick,1000);setInterval(()=>localStorage.setItem(KEY,JSON.stringify(s)),5000);
+const canvas=document.getElementById('game'),ctx=canvas.getContext('2d');
+const SAVE='vale-verde-isometric-v2';
+const crops={carrot:{name:'Cenoura',emoji:'🥕',seed:12,sell:32,seconds:25,xp:8},wheat:{name:'Trigo',emoji:'🌾',seed:18,sell:45,seconds:35,xp:10},corn:{name:'Milho',emoji:'🌽',seed:28,sell:70,seconds:50,xp:15},strawberry:{name:'Morango',emoji:'🍓',seed:35,sell:90,seconds:60,xp:18}};
+let state=load();let W=0,H=0,dpr=1,cam={x:0,y:0,zoom:1},player={x:8,y:8,tx:8,ty:8,step:0},tool='move',selected='carrot',toastTimer;
+function fresh(){return {coins:700,xp:16,level:1,plots:{},inventory:{carrot:2,wheat:1,corn:0,strawberry:0},animals:{chicken:0,cow:0},last:Date.now(),day:1}}
+function load(){try{let v=JSON.parse(localStorage.getItem(SAVE));return v?{...fresh(),...v}:fresh()}catch(e){return fresh()}}
+function save(){localStorage.setItem(SAVE,JSON.stringify(state))}
+function resize(){dpr=Math.min(devicePixelRatio||1,2);W=innerWidth;H=innerHeight;canvas.width=W*dpr;canvas.height=H*dpr;canvas.style.width=W+'px';canvas.style.height=H+'px';ctx.setTransform(dpr,0,0,dpr,0,0);cam.zoom=Math.min(W/1050,H/680,1.35);cam.x=W/2;cam.y=H*.47}
+addEventListener('resize',resize);resize();
+function iso(x,y){let tw=58*cam.zoom,th=30*cam.zoom;return {x:cam.x+(x-y)*tw/2,y:cam.y+(x+y)*th/2}}
+function poly(points,fill,stroke,lw=1){ctx.beginPath();points.forEach((p,i)=>i?ctx.lineTo(p.x,p.y):ctx.moveTo(p.x,p.y));ctx.closePath();ctx.fillStyle=fill;ctx.fill();if(stroke){ctx.lineWidth=lw;ctx.strokeStyle=stroke;ctx.stroke()}}
+function diamond(x,y,fill,stroke){let p=iso(x,y),tw=58*cam.zoom,th=30*cam.zoom;poly([{x:p.x,y:p.y-th/2},{x:p.x+tw/2,y:p.y},{x:p.x,y:p.y+th/2},{x:p.x-tw/2,y:p.y}],fill,stroke,1.5*cam.zoom)}
+function text(t,x,y,size=14,color='#fff'){ctx.font='bold '+size*cam.zoom+'px Trebuchet MS';ctx.textAlign='center';ctx.lineWidth=3*cam.zoom;ctx.strokeStyle='#553417';ctx.strokeText(t,x,y);ctx.fillStyle=color;ctx.fillText(t,x,y)}
+function drawTree(x,y,palm=false){let p=iso(x,y);ctx.save();ctx.translate(p.x,p.y);ctx.scale(cam.zoom,cam.zoom);ctx.fillStyle='#6d4625';ctx.fillRect(-4,-39,8,42);if(palm){ctx.fillStyle='#258d39';for(let i=0;i<7;i++){ctx.save();ctx.rotate(i*Math.PI/3.5);ctx.beginPath();ctx.ellipse(0,-43,9,35,0,0,Math.PI*2);ctx.fill();ctx.restore()}}else{for(let i=0;i<3;i++){ctx.fillStyle=['#1d7833','#278b38','#17682b'][i];ctx.beginPath();ctx.moveTo(0,-92+i*22);ctx.lineTo(-24+i*5,-48+i*18);ctx.lineTo(24-i*5,-48+i*18);ctx.closePath();ctx.fill()}}ctx.restore()}
+function drawWorld(){let bg=ctx.createLinearGradient(0,0,0,H);bg.addColorStop(0,'#79a92d');bg.addColorStop(1,'#4c8d26');ctx.fillStyle=bg;ctx.fillRect(0,0,W,H);
+ // decorative fields
+ for(let y=-3;y<24;y++)for(let x=-5;x<25;x++){let p=iso(x,y);diamond(x,y,(x+y)%3===0?'#77a932':'#70a12b');if((x*7+y*11)%29===0){ctx.fillStyle='#a6c65a';ctx.fillRect(p.x,p.y,2,2)}}
+ // farm path
+ for(let i=-3;i<8;i++){let p=iso(i,2);diamond(i,2,'#caa46b','#b58b51')}
+ // farm fenced-ish plot area
+ for(let y=5;y<14;y++)for(let x=5;x<15;x++){let p=iso(x,y);diamond(x,y,'#72b84a','#83c65a')}
+ // fixed decoration
+ drawTree(3,7);drawTree(16,4);drawTree(17,14,true);drawTree(2,15,true);drawTree(13,2);
+ // crops plot grid 4x4
+ for(let y=7;y<11;y++)for(let x=8;x<12;x++){let k=x+','+y,v=state.plots[k],p=iso(x,y);if(v){let ready=Date.now()>=v.ready;diamond(x,y,ready?'#93602f':'#79502c','#4e8c2d');if(ready){for(let n=0;n<5;n++){let xx=p.x+(n-2)*8*cam.zoom,yy=p.y-8*cam.zoom+Math.sin(n)*2;ctx.font=(20*cam.zoom)+'px serif';ctx.fillText(crops[v.type].emoji,xx,yy)}}else{for(let n=0;n<3;n++){ctx.font=(16*cam.zoom)+'px serif';ctx.fillText('🌱',p.x+(n-1)*10*cam.zoom,p.y-4*cam.zoom)}}if(v.ready-Date.now()>0)text(Math.ceil((v.ready-Date.now())/1000)+'s',p.x,p.y+5,8,'#fff')}}else diamond(x,y,'#a66d3c','#5e8f30');}
+ // animal paddock
+ for(let y=12;y<14;y++)for(let x=8;x<12;x++){diamond(x,y,'#b7a16a','#d4c17c');if((x+y)%2===0){ctx.font=(18*cam.zoom)+'px serif';ctx.fillText('🐔',iso(x,y).x,iso(x,y).y)}}
+ // player
+ let p=iso(player.x,player.y);ctx.save();ctx.translate(p.x,p.y-20*cam.zoom);ctx.scale(cam.zoom,cam.zoom);ctx.fillStyle='#503018';ctx.beginPath();ctx.ellipse(0,17,15,6,0,0,Math.PI*2);ctx.fill();ctx.fillStyle='#a84a29';ctx.fillRect(-9,-5,18,22);ctx.fillStyle='#f2c99a';ctx.beginPath();ctx.arc(0,-15,11,0,Math.PI*2);ctx.fill();ctx.fillStyle='#5b321b';ctx.beginPath();ctx.arc(0,-21,11,Math.PI,Math.PI*2);ctx.fill();ctx.fillRect(-11,-22,22,5);ctx.fillStyle='#2d2019';ctx.fillRect(-5,-16,3,3);ctx.fillRect(3,-16,3,3);ctx.fillStyle='#416a2b';ctx.fillRect(-11,3,7,13);ctx.fillRect(4,3,7,13);ctx.restore();
+ // sign
+ let s=iso(5,6);text('🌻 VALE VERDE',s.x-35,s.y-24,17,'#fff7cf');
+}
+function loop(){ctx.clearRect(0,0,W,H);drawWorld();player.x+=(player.tx-player.x)*.13;player.y+=(player.ty-player.y)*.13;player.step+=.04;requestAnimationFrame(loop)}
+requestAnimationFrame(loop);
+function tileAt(px,py){let best=null,dist=1e9;for(let y=7;y<11;y++)for(let x=8;x<12;x++){let p=iso(x,y),d=Math.abs(px-p.x)/(29*cam.zoom)+Math.abs(py-p.y)/(15*cam.zoom);if(d<1&&d<dist){dist=d;best={x,y}}}return best}
+canvas.addEventListener('click',e=>{let r=canvas.getBoundingClientRect(),t=tileAt(e.clientX-r.left,e.clientY-r.top);if(!t){let x=Math.round((e.clientX-cam.x)/(58*cam.zoom/2)),y=Math.round((e.clientY-cam.y)/(30*cam.zoom/2));player.tx=Math.max(0,Math.min(20,player.x+x*.25));player.ty=Math.max(0,Math.min(20,player.y+y*.25));return}player.tx=t.x;player.ty=t.y;let k=t.x+','+t.y,v=state.plots[k];if(tool==='plow'){if(v){toast('Colha primeiro este canteiro.');return}state.plots[k]={type:null,plowed:true};toast('Terra preparada! Agora plante.')}else if(tool==='plant'){if(v?.type){toast('Este canteiro já tem uma plantação.');return}let c=crops[selected];if(state.coins<c.seed){toast('Moedas insuficientes!');return}state.coins-=c.seed;state.plots[k]={type:selected,ready:Date.now()+c.seconds*1000};toast(c.name+' plantada!')}else if(tool==='harvest'){if(!v?.type){toast('Não há plantação neste canteiro.');return}if(Date.now()<v.ready){toast('Ainda está crescendo!');return}state.inventory[v.type]=(state.inventory[v.type]||0)+1;delete state.plots[k];gain(crops[v.type].xp);toast('Colheita guardada no celeiro!')}else{player.tx=t.x;player.ty=t.y;toast('Você caminhou até o canteiro.')}save();refresh()});
+addEventListener('keydown',e=>{let dx=0,dy=0;if(e.key==='ArrowUp'||e.key==='w')dy=-1;if(e.key==='ArrowDown'||e.key==='s')dy=1;if(e.key==='ArrowLeft'||e.key==='a')dx=-1;if(e.key==='ArrowRight'||e.key==='d')dx=1;player.tx=Math.max(0,Math.min(20,player.tx+dx));player.ty=Math.max(0,Math.min(20,player.ty+dy))});
+function gain(n){state.xp+=n;while(state.xp>=state.level*100){state.xp-=state.level*100;state.level++;state.coins+=100;toast('Subiu para o nível '+state.level+'! +100 moedas')}}function setTool(t){tool=t;toast(({move:'Modo caminhar',plow:'Escolha um terreno para arar',plant:'Escolha um canteiro para plantar',harvest:'Escolha uma plantação madura para colher'})[t])}
+function toast(t){let el=document.getElementById('toast');el.textContent=t;el.style.opacity=1;clearTimeout(toastTimer);toastTimer=setTimeout(()=>el.style.opacity=0,2200)}
+function openPanel(id){closePanels();document.getElementById(id).classList.add('open');if(id==='shop')renderShop();if(id==='barn')renderBarn();if(id==='animals')renderAnimals()}
+function closePanels(){document.querySelectorAll('.panel').forEach(p=>p.classList.remove('open'))}
+function renderShop(){let el=document.getElementById('shopitems');el.innerHTML='';Object.entries(crops).forEach(([k,c])=>{let d=document.createElement('div');d.className='item';d.innerHTML='<span>'+c.emoji+' <b>'+c.name+'</b><small>Colheita: '+c.sell+' moedas · '+c.seconds+'s</small></span><button>'+c.seed+' 🪙</button>';d.querySelector('button').onclick=()=>{selected=k;setTool('plant');closePanels();toast(c.name+' selecionada. Clique no canteiro!')};el.appendChild(d)})}
+function renderBarn(){let el=document.getElementById('inventory');el.innerHTML='';Object.entries(crops).forEach(([k,c])=>{let n=state.inventory[k]||0,d=document.createElement('div');d.className='item';d.innerHTML='<span>'+c.emoji+' '+c.name+' <b>×'+n+'</b></span><button '+(!n?'disabled':'')+'>Vender tudo · '+n*c.sell+' 🪙</button>';d.querySelector('button').onclick=()=>{state.coins+=n*c.sell;state.inventory[k]=0;save();renderBarn();refresh();toast('Venda realizada!')};el.appendChild(d)})}
+function renderAnimals(){let el=document.getElementById('animalitems');el.innerHTML='';[['chicken','🐔','Galinha',90,'🥚',12],['cow','🐄','Vaca',180,'🥛',25]].forEach(([k,emoji,name,cost,produce,value])=>{let d=document.createElement('div');d.className='item';d.innerHTML='<span>'+emoji+' '+name+' ×'+state.animals[k]+'<small>Produz '+produce+' a cada 60 segundos</small></span><button>Comprar '+cost+' 🪙</button>';d.querySelector('button').onclick=()=>{if(state.coins<cost){toast('Moedas insuficientes');return}state.coins-=cost;state.animals[k]++;save();renderAnimals();refresh();toast(name+' comprada!')};el.appendChild(d)})}
+function refresh(){document.getElementById('money').textContent=state.coins;document.getElementById('lvl').textContent=state.level;document.getElementById('xp').textContent=state.xp;document.getElementById('tasktext').textContent='Use os botões para arar, plantar e colher. WASD ou setas para caminhar.'}
+setInterval(()=>{let now=Date.now();if(now-state.last>60000){let mins=Math.floor((now-state.last)/60000);state.inventory.egg=(state.inventory.egg||0)+mins*state.animals.chicken;state.inventory.milk=(state.inventory.milk||0)+mins*state.animals.cow;state.last=now;save()}refresh()},1000);
+setInterval(save,5000);refresh();renderShop();
 </script></body></html>
