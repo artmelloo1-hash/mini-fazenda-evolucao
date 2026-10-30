@@ -17,7 +17,7 @@ export class FarmScene extends Phaser.Scene{
   this.scale.on("resize",()=>this.layoutWorld());
   window.addEventListener("farm-command",this.command as EventListener);
   this.events.once("shutdown",()=>window.removeEventListener("farm-command",this.command as EventListener));
-  this.load();this.refresh();this.time.addEvent({delay:1000,loop:true,callback:()=>{this.drawPlants();this.refresh();}});this.time.addEvent({delay:5000,loop:true,callback:()=>this.save()});
+  this.loadGame();this.refresh();this.time.addEvent({delay:1000,loop:true,callback:()=>{this.drawPlants();this.refresh();}});this.time.addEvent({delay:5000,loop:true,callback:()=>this.save()});
  }
  private layoutWorld(){const w=this.scale.width,h=this.scale.height;this.tw=Math.max(52,Math.min(78,w/16));this.th=this.tw*.5;this.ox=w/2;this.oy=h*.44-(this.mw+this.mh)*this.th*.25;this.world?.removeAll(true);this.plants?.removeAll(true);
   for(let y=0;y<this.mh;y++)for(let x=0;x<this.mw;x++){const c=[0x79ae43,0x74a83e,0x80b548,0x70a13a][(x*3+y*7)%4];this.tile(this.world,x,y,c,0x699744);}
@@ -44,7 +44,7 @@ export class FarmScene extends Phaser.Scene{
   this.drawPlants();this.refresh();this.save();
  }
  private drawPlants(){this.plants.removeAll(true);for(let y=7;y<=10;y++)for(let x=7;x<=11;x++){const v=this.plots[this.key(x,y)];if(!v)continue;this.tile(this.plants,x,y,0x8d5c36,0x65452b);if(!v.seed)continue;const s=SEEDS[v.seed],age=Date.now()-(v.plantedAt||Date.now()),stage=Math.min(3,Math.floor(age/(s.grow/3))),n=stage>=3?5:stage+2,p=this.pos(x,y);for(let i=0;i<n;i++){const plant=this.add.text(p.x+(i-(n-1)/2)*9,p.y-5-(i%2)*3,stage>=3?s.emoji:stage===0?"🌱":stage===1?"🌿":"🌾",{fontSize:stage>=3?"19px":"16px"}).setOrigin(.5,1);this.plants.add(plant);}}}
- private load(){try{const d=JSON.parse(localStorage.getItem(KEY)||"null");if(d){this.coins=d.coins??700;this.xp=d.xp??16;this.level=d.level??1;this.inventory={...this.inventory,...d.inventory};this.plots=d.plots??{};}}catch{}}
+ private loadGame(){try{const d=JSON.parse(localStorage.getItem(KEY)||"null");if(d){this.coins=d.coins??700;this.xp=d.xp??16;this.level=d.level??1;this.inventory={...this.inventory,...d.inventory};this.plots=d.plots??{};}}catch{}}
  private save(){localStorage.setItem(KEY,JSON.stringify({coins:this.coins,xp:this.xp,level:this.level,inventory:this.inventory,plots:this.plots}));}
  private refresh(){const n=Object.values(this.plots).filter(p=>p.seed).length;window.dispatchEvent(new CustomEvent("farm-ui",{detail:{type:"stats",data:{coins:this.coins,level:this.level,xp:this.xp,quest:n===0?"Prepare um canteiro e plante sua primeira semente.":n<3?"Continue plantando para ampliar sua produção.":"Sua fazenda está crescendo! Colha e venda."}}}));}
  private toast(s:string){window.dispatchEvent(new CustomEvent("farm-ui",{detail:{type:"toast",data:s}}));}
