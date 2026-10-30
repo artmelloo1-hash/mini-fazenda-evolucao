@@ -1,0 +1,137 @@
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mini Fazenda Evolução</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;font-family:Arial,sans-serif;background:#eaf5df;color:#29452b}
+header{background:linear-gradient(120deg,#285d35,#4c9a4b);color:white;padding:24px 5%;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px}
+header h1{margin:0;font-size:25px}
+.stats{display:flex;gap:10px;flex-wrap:wrap}
+.stat{background:#ffffff20;padding:10px 15px;border-radius:12px;font-weight:bold}
+main{max-width:1100px;margin:25px auto;padding:0 15px}
+.welcome{background:white;border-radius:18px;padding:20px;margin-bottom:20px;box-shadow:0 5px 18px #315b2512}
+.welcome h2{margin:0 0 8px}
+.toolbar{display:flex;gap:10px;flex-wrap:wrap;margin:18px 0}
+button{border:0;border-radius:12px;padding:12px 17px;font-weight:bold;cursor:pointer;background:#438c45;color:white;font-size:14px}
+button:hover{filter:brightness(1.08)}
+button:disabled{opacity:.5;cursor:not-allowed}
+#farm{background:#b7df9b;border:8px solid #8b603c;border-radius:18px;padding:14px;display:grid;grid-template-columns:repeat(5,1fr);gap:10px;box-shadow:inset 0 0 0 3px #ffffff55}
+.plot{min-height:105px;border:3px solid #8c633f;border-radius:13px;background:#9b7048;display:flex;flex-direction:column;justify-content:center;align-items:center;gap:6px;color:white;text-align:center;padding:5px}
+.plot.empty{background:#9b7048}
+.plot.ready{background:#e9bd45;color:#543d13}
+.plot.growing{background:#78a95a}
+.plot .emoji{font-size:30px}
+.plot small{font-size:11px}
+.panel{background:white;border-radius:18px;padding:20px;margin-top:20px;box-shadow:0 5px 18px #315b2512}
+#message{color:#39733a;font-weight:bold;min-height:22px}
+footer{text-align:center;padding:25px;color:#648064}
+@media(max-width:600px){#farm{grid-template-columns:repeat(3,1fr);gap:7px;padding:8px}.plot{min-height:90px}header h1{font-size:21px}}
+</style>
+</head>
+<body>
+<header>
+  <h1>🌻 Mini Fazenda Evolução</h1>
+  <div class="stats">
+    <div class="stat">🪙 <span id="coins">100</span></div>
+    <div class="stat">⭐ Nível <span id="level">1</span></div>
+    <div class="stat">✨ XP <span id="xp">0</span></div>
+  </div>
+</header>
+
+<main>
+  <section class="welcome">
+    <h2>Bem-vindo à sua fazenda!</h2>
+    <p>Prepare a terra, plante suas sementes e colha para ganhar moedas e experiência.</p>
+    <div id="message">Sua aventura começa agora! 🌱</div>
+  </section>
+
+  <div class="toolbar">
+    <button onclick="selectAction('plant')">🌱 Plantar trigo (10 moedas)</button>
+    <button onclick="selectAction('harvest')">🌾 Colher plantação</button>
+  </div>
+
+  <section id="farm"></section>
+
+  <section class="panel">
+    <h3>📖 Como jogar</h3>
+    <p>1. Escolha <b>Plantar trigo</b> e clique em um terreno vazio.</p>
+    <p>2. Aguarde o crescimento da plantação.</p>
+    <p>3. Escolha <b>Colher plantação</b> e clique no trigo pronto.</p>
+    <p>4. Ganhe moedas e XP para evoluir sua fazenda!</p>
+    <p>🌾 Cada colheita rende 25 moedas e 10 XP.</p>
+  </section>
+</main>
+
+<footer>Mini Fazenda Evolução • Sua fazenda, suas conquistas! 🌻</footer>
+
+<script>
+const TOTAL=25;
+const GROW_TIME=15000;
+let coins=100,xp=0,action='plant',plots=[];
+
+function load(){
+  try{
+    const saved=JSON.parse(localStorage.getItem('miniFazendaEvolucao'));
+    if(saved){coins=saved.coins??100;xp=saved.xp??0;plots=saved.plots??[];}
+  }catch(e){}
+  while(plots.length<TOTAL)plots.push(null);
+  render();
+}
+function save(){
+  localStorage.setItem('miniFazendaEvolucao',JSON.stringify({coins,xp,plots}));
+}
+function level(){return Math.floor(xp/50)+1}
+function selectAction(a){
+  action=a;
+  say(a==='plant'?'Escolha um terreno vazio para plantar. 🌱':'Clique em uma plantação pronta para colher. 🌾');
+}
+function say(t){document.getElementById('message').textContent=t}
+function plant(i){
+  if(coins<10){say('Você não tem moedas suficientes!');return}
+  if(plots[i]){say('Esse terreno já está ocupado.');return}
+  coins-=10;
+  plots[i]={plantedAt:Date.now()};
+  say('Trigo plantado! Aguarde o crescimento. 🌱');
+  save();render();
+}
+function harvest(i){
+  const p=plots[i];
+  if(!p)return;
+  if(Date.now()-p.plantedAt<GROW_TIME){say('O trigo ainda está crescendo!');return}
+  plots[i]=null;coins+=25;xp+=10;
+  say('Colheita realizada! Você ganhou 25 moedas e 10 XP! 🎉');
+  save();render();
+}
+function render(){
+  document.getElementById('coins').textContent=coins;
+  document.getElementById('xp').textContent=xp;
+  document.getElementById('level').textContent=level();
+  const farm=document.getElementById('farm');
+  farm.innerHTML='';
+  plots.forEach((p,i)=>{
+    const el=document.createElement('button');
+    el.className='plot '+(!p?'empty':'growing');
+    if(!p){
+      el.innerHTML='<span class="emoji">🟫</span><small>Terreno vazio</small>';
+    }else{
+      const elapsed=Date.now()-p.plantedAt;
+      const ready=elapsed>=GROW_TIME;
+      const remaining=Math.max(0,Math.ceil((GROW_TIME-elapsed)/1000));
+      el.className='plot '+(ready?'ready':'growing');
+      el.innerHTML=ready
+        ?'<span class="emoji">🌾</span><small>Pronto para colher!</small>'
+        :'<span class="emoji">🌱</span><small>Crescendo: '+remaining+'s</small>';
+    }
+    el.onclick=()=>action==='plant'?plant(i):harvest(i);
+    farm.appendChild(el);
+  });
+}
+load();
+setInterval(render,1000);
+</script>
+</body>
+</html>
